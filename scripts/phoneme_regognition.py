@@ -1,3 +1,4 @@
+import torchaudio
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 from datasets import load_dataset
 from itertools import groupby
@@ -22,12 +23,34 @@ model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-xlsr-53-espeak-cv-ft")
 
 print(model)
 
-# load dummy dataset and read soundfiles
-ds = load_dataset("patrickvonplaten/librispeech_asr_dummy", "clean", split="validation")
+# # Prepare inputs with dataset
+# # load dummy dataset and read soundfiles
+# ds = load_dataset("patrickvonplaten/librispeech_asr_dummy", "clean", split="validation")
 
-# tokenize
-input_values = processor(ds[0]["audio"]["array"], return_tensors="pt").input_values
-sample_rate = ds[0]["audio"]["sampling_rate"]
+# input_values = processor(ds[0]["audio"]["array"], return_tensors="pt").input_values
+# sample_rate = ds[0]["audio"]["sampling_rate"]
+
+audio_filepath = '../data/assessment_9.wav'
+text = "But after all that commotion, was it all worthwhile? Absolutely yes! The set design was breathtaking, the actors were incredible, and the songs were memorable."
+
+# Resample function using torchaudio
+def resample(waveform, sample_rate, target_sample_rate=16000):
+    """Resample the WAV audio to the target sample rate."""
+    if sample_rate == target_sample_rate:
+        return waveform
+
+    resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=target_sample_rate)
+    return resampler(waveform)
+
+# Read and resample
+waveform, current_sample_rate = torchaudio.load(audio_filepath)
+resampled_waveform = resample(waveform, current_sample_rate)
+
+# Convert to numpy for feeding into processor
+speech = resampled_waveform.squeeze().numpy()
+sample_rate = processor.feature_extractor.sampling_rate
+input_values = processor(speech, sampling_rate=sample_rate, return_tensors="pt").input_values
+
 
 # retrieve logits
 with torch.no_grad():
@@ -44,7 +67,7 @@ print(transcription)
 ##############
 # this is where the logic starts to get the start and end timestamp for each word
 ##############
-words = [w for w in transcription[0].split(' ') if len(w) > 0]
+phonemes = [w for w in transcription[0].split(' ') if len(w) > 0]
 predicted_ids = predicted_ids[0].tolist()
 duration_sec = input_values.shape[1] / sample_rate
 
@@ -54,16 +77,22 @@ ids_w_time = [(i / len(predicted_ids) * duration_sec, _id) for i, _id in enumera
 ids_w_time = [i for i in ids_w_time if i[1] != processor.tokenizer.pad_token_id]
 # now split the ids into groups of ids where each group represents a word
 split_ids_w_time = [list(group) for k, group
-                    in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
+                    in groupby(ids_w_time, lambda x: x[1] == 0)
                     if not k]
 
-assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
+# assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
 
 word_start_times = []
 word_end_times = []
-for cur_ids_w_time, cur_word in zip(split_ids_w_time, words):
+for cur_ids_w_time, cur_word in zip(split_ids_w_time[0], phonemes):
     _times = [_time for _time, _id in cur_ids_w_time]
     word_start_times.append(min(_times))
     word_end_times.append(max(_times))
     
-words, word_start_times, word_end_times
+
+for phoneme, start, end in zip(phonemes, word_start_times, word_end_times):
+    print(f"{phoneme} {start} {end}")
+    
+    
+    
+## Plot figure

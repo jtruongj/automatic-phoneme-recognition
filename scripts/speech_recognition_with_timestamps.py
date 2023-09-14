@@ -15,7 +15,7 @@ model_name = 'facebook/wav2vec2-large-960h-lv60-self'
 processor = Wav2Vec2Processor.from_pretrained(model_name)
 model = Wav2Vec2ForCTC.from_pretrained(model_name)
 
-audio_filepath = 'data/assessment_9.wav'
+audio_filepath = '../data/assessment_9.wav'
 
 # Resample function using torchaudio
 def resample(waveform, sample_rate, target_sample_rate=16000):
