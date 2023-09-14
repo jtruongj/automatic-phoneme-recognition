@@ -196,34 +196,35 @@ def plot_phonemes_alternative(start_times, end_times, phonemes):
     plt.figure(figsize=(20, 6))
 
     previous_time = 0
-    previous_phoneme = None
-    y_position = 0  # This will alternate between 0 and 1
+    y_position = 0  # This will alternate between 0 and 0.5
 
     for i, (start, end, phoneme) in enumerate(zip(start_times, end_times, phonemes)):
-        if start - previous_time < 0.03:  # If less than 0.03s apart, switch row
-            y_position = 1 - y_position
-        
         if i < len(phonemes) - 1 and phoneme == phonemes[i+1]:
             color = "red"
-        elif phoneme == previous_phoneme:
+        elif i > 0 and phoneme == phonemes[i-1]:  # Also checking the previous phoneme
             color = "red"
         else:
             color = "skyblue"
 
-        plt.plot([start, start], [y_position, y_position + 0.5], color=color, linewidth=6)
-        plt.text(start, y_position + 0.55, processor.decode(phoneme), ha="center", color=color)
-        previous_time = start
-        previous_phoneme = phoneme
+        # If phonemes are too close, alternate the height
+        if start - previous_time < 0.03:
+            y_position = 0.5 if y_position == 0 else 0
+
+        plt.plot([start, end], [y_position, y_position], color=color, linewidth=10)
+        plt.text((start + end) / 2, y_position + 0.1, processor.decode(phoneme), ha="center", va="bottom", color=color)
+
+        previous_time = end
 
     # Making the plot look nice
     plt.yticks([])
-    plt.ylim([-0.5, 2])
+    plt.ylim([-0.5, 1])
     plt.xlabel("Time (s)")
-    plt.title("Phoneme Durations with Vertical Ticks")
+    plt.title("Phoneme Durations with Alternating Rows")
     blue_patch = mpatches.Patch(color='skyblue', label='Phoneme Duration')
     red_patch = mpatches.Patch(color='red', label='Repeated Phoneme Duration')
     plt.legend(handles=[blue_patch, red_patch])
     plt.tight_layout()
     plt.show()
+
 
 plot_phonemes_alternative(start_times, end_times, phoneme_ids)
