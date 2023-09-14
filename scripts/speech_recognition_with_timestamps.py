@@ -7,7 +7,10 @@ from datasets import load_dataset
 
 ##############
 # load model & audio and run audio through model
+# This version was copy pasted from this issue:
+# https://github.com/huggingface/transformers/issues/11307#issuecomment-1107713461
 ##############
+
 model_name = 'facebook/wav2vec2-large-960h-lv60-self'
 processor = Wav2Vec2Processor.from_pretrained(model_name)
 model = Wav2Vec2ForCTC.from_pretrained(model_name)
