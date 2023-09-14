@@ -1,7 +1,3 @@
-Sure, here's a README.md that you can use:
-
----
-
 # Phoneme Recognition and Speech Timestamping Project
 
 This project provides tools for phoneme recognition, word extraction with timestamps, and MP3 to WAV file conversion. It uses deep learning models and tools to achieve this.
