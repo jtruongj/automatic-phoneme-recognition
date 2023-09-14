@@ -2,6 +2,13 @@
 
 This project provides tools for phoneme recognition, word extraction with timestamps, and MP3 to WAV file conversion. It uses deep learning models and tools to achieve this.
 
+## TODO
+- [ ] Merge phoneme recognition with ASR with timestamps
+- [ ] Run model on assigment recording
+- [ ] Implement grapheme -> phoneme extraction
+- [ ] Update phonemes vocabulary to use CMU prounciation phoneme dictionary
+
+
 ## Installation
 
 ### Prerequisites
