@@ -5,6 +5,13 @@ import torch
 from transformers import pipeline
 
 import os
+
+##############
+# This code was found and adapted from here:
+# https://huggingface.co/facebook/wav2vec2-lv-60-espeak-cv-ft
+##############
+
+
 # Add the path to espeak library to the environment variables
 os.environ['PHONEMIZER_ESPEAK_LIBRARY'] = "/opt/homebrew/Cellar/espeak/1.48.04_1/lib/libespeak.dylib"
 
