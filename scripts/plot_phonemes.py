@@ -139,31 +139,53 @@ data = [(0.6204948593073594, 26),
  (13.370663419913422, 26),
  (13.410695346320347, 61)]
 
+def plot_phonemes(start_times, end_times, phonemes, merge=False):
+    plt.figure(figsize=(15, 6))
+    
+    previous_phoneme = None
+    merged_start = start_times[0]
+    for i, (start, end, phoneme) in enumerate(zip(start_times, end_times, phonemes)):
+        color = "skyblue"
+        
+        # If the phoneme is the same as the previous one, color it red
+        if phoneme == previous_phoneme:
+            color = "red"
+            if merge:
+                continue
+        
+        # If we're merging and the current phoneme is different than the previous one,
+        # we plot the previous phoneme before continuing
+        if merge and phoneme != previous_phoneme and i != 0:
+            plt.barh(i-1, end - merged_start, left=merged_start, height=0.9, color=color)
+            plt.text(merged_start + (end - merged_start) / 2, i-1, previous_phoneme, ha="center", va="bottom")
+            merged_start = start
+
+        # If not merging or at the last phoneme, just plot
+        if not merge or i == len(phonemes) - 1:
+            plt.barh(i, end - start, left=start, height=0.9, color=color)
+            plt.text(start + (end - start) / 2, i, phoneme, ha="center", va="bottom")
+        
+        previous_phoneme = phoneme
+    
+    # Making the plot look nice
+    plt.yticks([])
+    plt.xlabel("Time (s)")
+    plt.title("Phoneme Durations (Merged)" if merge else "Phoneme Durations")
+    plt.grid(axis="x")
+    blue_patch = mpatches.Patch(color='skyblue', label='Phoneme Duration')
+    red_patch = mpatches.Patch(color='red', label='Repeated Phoneme Duration')
+    plt.legend(handles=[blue_patch, red_patch])
+    plt.tight_layout()
+    plt.show()
+
 # Splitting data into start times and phoneme IDs
 start_times, phoneme_ids = zip(*data)
-
-# Compute end times as start times of next phoneme
+# Compute end times as start times of the next phoneme
 end_times = list(start_times[1:]) + [start_times[-1] + 0.2]  # Adding a dummy end time for the last phoneme
-
 # Convert phoneme IDs to their symbols
 phonemes = [processor.decode(pid) for pid in phoneme_ids]
 
-# Plotting
-plt.figure(figsize=(15, 6))
-
-for i, (start, end, phoneme) in enumerate(zip(start_times, end_times, phonemes)):
-    plt.barh(i, end - start, left=start, height=0.8, color="skyblue")
-    plt.text(start + (end - start) / 2, i, phoneme, ha="center", va="bottom")
-
-# Making the plot look nice
-plt.yticks([])
-plt.xlabel("Time (s)")
-plt.title("Phoneme Durations")
-plt.grid(axis="x")
-
-# Legend
-blue_patch = mpatches.Patch(color='skyblue', label='Phoneme Duration')
-plt.legend(handles=[blue_patch])
-
-plt.tight_layout()
-plt.show()
+# Plotting without merging
+plot_phonemes(start_times, end_times, phonemes)
+# Plotting with merging
+plot_phonemes(start_times, end_times, phonemes, merge=True)
