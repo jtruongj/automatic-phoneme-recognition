@@ -139,31 +139,36 @@ data = [(0.6204948593073594, 26),
  (13.370663419913422, 26),
  (13.410695346320347, 61)]
 
+
+
 def plot_phonemes(start_times, end_times, phonemes, merge=False):
-    plt.figure(figsize=(15, 6))
+    plt.figure(figsize=(20, 6))  # Increased width for clarity
     
     previous_phoneme = None
     merged_start = start_times[0]
+    color = "skyblue"
+    
     for i, (start, end, phoneme) in enumerate(zip(start_times, end_times, phonemes)):
-        color = "skyblue"
-        
-        # If the phoneme is the same as the previous one, color it red
-        if phoneme == previous_phoneme:
+        if i < len(phonemes) - 1 and phoneme == phonemes[i+1]:
             color = "red"
-            if merge:
-                continue
+        elif phoneme == previous_phoneme:
+            color = "red"
+        else:
+            color = "skyblue"
         
-        # If we're merging and the current phoneme is different than the previous one,
-        # we plot the previous phoneme before continuing
-        if merge and phoneme != previous_phoneme and i != 0:
-            plt.barh(i-1, end - merged_start, left=merged_start, height=0.9, color=color)
-            plt.text(merged_start + (end - merged_start) / 2, i-1, previous_phoneme, ha="center", va="bottom")
-            merged_start = start
-
-        # If not merging or at the last phoneme, just plot
-        if not merge or i == len(phonemes) - 1:
+        if not merge:
             plt.barh(i, end - start, left=start, height=0.9, color=color)
-            plt.text(start + (end - start) / 2, i, phoneme, ha="center", va="bottom")
+            plt.text(start + (end - start) / 2, i, processor.decode(phoneme), ha="center", va="bottom", color=color)
+        else:
+            if phoneme != previous_phoneme and i != 0:
+                plt.barh(i-1, end - merged_start, left=merged_start, height=0.9, color=color)
+                plt.text(merged_start + (end - merged_start) / 2, i-1, processor.decode(previous_phoneme), ha="center", va="bottom", color=color)
+                merged_start = start
+
+            # If at the last phoneme, just plot
+            if i == len(phonemes) - 1:
+                plt.barh(i, end - merged_start, left=merged_start, height=0.9, color=color)
+                plt.text(merged_start + (end - merged_start) / 2, i, processor.decode(phoneme), ha="center", va="bottom", color=color)
         
         previous_phoneme = phoneme
     
@@ -182,10 +187,8 @@ def plot_phonemes(start_times, end_times, phonemes, merge=False):
 start_times, phoneme_ids = zip(*data)
 # Compute end times as start times of the next phoneme
 end_times = list(start_times[1:]) + [start_times[-1] + 0.2]  # Adding a dummy end time for the last phoneme
-# Convert phoneme IDs to their symbols
-phonemes = [processor.decode(pid) for pid in phoneme_ids]
 
 # Plotting without merging
-plot_phonemes(start_times, end_times, phonemes)
+plot_phonemes(start_times, end_times, phoneme_ids)
 # Plotting with merging
-plot_phonemes(start_times, end_times, phonemes, merge=True)
+plot_phonemes(start_times, end_times, phoneme_ids, merge=True)
