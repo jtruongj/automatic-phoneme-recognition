@@ -1,5 +1,6 @@
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 from datasets import load_dataset
+from itertools import groupby
 import torch
 
 from transformers import pipeline
@@ -26,6 +27,7 @@ ds = load_dataset("patrickvonplaten/librispeech_asr_dummy", "clean", split="vali
 
 # tokenize
 input_values = processor(ds[0]["audio"]["array"], return_tensors="pt").input_values
+sample_rate = ds[0]["audio"]["sampling_rate"]
 
 # retrieve logits
 with torch.no_grad():
@@ -38,3 +40,30 @@ transcription = processor.batch_decode(predicted_ids)
 # => should give ['m ɪ s t ɚ k w ɪ l t ɚ ɪ z ð ɪ ɐ p ɑː s əl l ʌ v ð ə m ɪ d əl k l æ s ɪ z æ n d w iː aʊ ɡ l æ d t ə w ɛ l k ə m h ɪ z ɡ ɑː s p ə']
 
 print(transcription)
+
+##############
+# this is where the logic starts to get the start and end timestamp for each word
+##############
+words = [w for w in transcription[0].split(' ') if len(w) > 0]
+predicted_ids = predicted_ids[0].tolist()
+duration_sec = input_values.shape[1] / sample_rate
+
+
+ids_w_time = [(i / len(predicted_ids) * duration_sec, _id) for i, _id in enumerate(predicted_ids)]
+# remove entries which are just "padding" (i.e. no characers are recognized)
+ids_w_time = [i for i in ids_w_time if i[1] != processor.tokenizer.pad_token_id]
+# now split the ids into groups of ids where each group represents a word
+split_ids_w_time = [list(group) for k, group
+                    in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
+                    if not k]
+
+assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
+
+word_start_times = []
+word_end_times = []
+for cur_ids_w_time, cur_word in zip(split_ids_w_time, words):
+    _times = [_time for _time, _id in cur_ids_w_time]
+    word_start_times.append(min(_times))
+    word_end_times.append(max(_times))
+    
+words, word_start_times, word_end_times
