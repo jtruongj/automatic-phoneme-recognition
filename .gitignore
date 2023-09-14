@@ -1,0 +1,6 @@
+# Hide my secret keys
+.secrets
+
+# Hide my virtual environment
+env/*
+
