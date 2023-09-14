@@ -66,21 +66,21 @@ Before running the installation steps, ensure that you have Python 3.x installed
      ```
 
 ## Usage
+1. **Convert MP3 file to WAV**:
 
-1. **Phoneme Recognition**:
+   ```bash
+   python scripts/convert_mp3_to_wav.py
+   ```
+
+2. **Phoneme Recognition**:
 
    ```bash
    python scripts/phoneme_regognition.py
    ```
 
-2. **Word Extraction with Timestamps**:
+3. **Word Extraction with Timestamps**:
 
    ```bash
    python scripts/speech_recognition_with_timestamps.py
    ```
 
-3. **Convert MP3 file to WAV**:
-
-   ```bash
-   python scripts/convert_mp3_to_wav.py
-   ```
