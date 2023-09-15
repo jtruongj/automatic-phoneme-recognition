@@ -1,4 +1,6 @@
 
+# Dictionary found here:
+# https://github.com/Kyubyong/g2p/issues/29#issuecomment-1366493750
 CMU_TO_IPA = {
 '<pad>': '<pad>',
 '<unk>': '<unk>',
@@ -76,3 +78,67 @@ CMU_TO_IPA = {
 'ZH': 'ʒ',
 ' ': ' '
 }
+
+IPA_TO_CMU_40 = {}
+
+for k, v in CMU_TO_IPA.items():
+    if k[-1] in ['0', '1', '2']:
+        k = k[:-1]
+    IPA_TO_CMU_40[v] = k  
+
+IPA_TO_CMU_40["ɾ"] = "T"
+IPA_TO_CMU_40["ɝ"] = "ER"
+
+del IPA_TO_CMU_40['<pad>']
+del IPA_TO_CMU_40['<unk>']
+del IPA_TO_CMU_40['<s>']
+del IPA_TO_CMU_40['</s>']
+
+# Note that the phoneme " " is encoded SIL in the CMU dictionary but left as a space here.
+
+assert len(set(IPA_TO_CMU_40.values())) == 40
+
+
+ALL_PHONEMES = [
+"AA",
+"AE",
+"AH",
+"AO",
+"AW",
+"AY",
+"B",
+"CH",
+"D",
+"DH",
+"EH",
+"ER",
+"EY",
+"F",
+"G",
+"HH",
+"IH",
+"IY",
+"JH",
+"K",
+"L",
+"M",
+"N",
+"NG",
+"OW",
+"OY",
+"P",
+"R",
+"S",
+"SH",
+"T",
+"TH",
+"UH",
+"UW",
+"V",
+"W",
+"Y",
+"Z",
+"ZH",
+"SIL",
+    
+]
