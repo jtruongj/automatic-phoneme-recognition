@@ -216,4 +216,8 @@ Before running the installation steps, ensure that you have Python 3.x installed
    python scripts/automatic_phoneme_timestamp_extraction.py
    ```
 
+## Citation
+_Automatic Phoneme Recognition on TIMIT Dataset with Wav2Vec 2.0 by Phy, Vitou (2022)_. 
+
+URL: https://huggingface.co/vitouphy/wav2vec2-xls-r-300m-timit-phoneme
 
