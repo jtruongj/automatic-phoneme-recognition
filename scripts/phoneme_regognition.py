@@ -1,3 +1,6 @@
+
+from typing import List, Tuple
+
 import torchaudio
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 from datasets import load_dataset
@@ -22,6 +25,25 @@ def get_resampled_audio(audio_filepath):
     waveform, current_sample_rate = torchaudio.load(audio_filepath)
     resampled_waveform = resample(waveform, current_sample_rate)
     return resampled_waveform
+
+def merge_consecutive_phonemes(phoneme_data: List[Tuple[str, float, float]]) -> List[Tuple[str, float, float]]:
+    if not phoneme_data:
+        return []
+
+    merged_data = []
+    current_phoneme, current_start, current_end = phoneme_data[0]
+
+    for phoneme, start, end in phoneme_data[1:]:
+        # If current phoneme is the same as next phoneme and end time matches the start time
+        if phoneme == current_phoneme and current_end == start:
+            current_end = end
+        else:
+            merged_data.append((current_phoneme, current_start, current_end))
+            current_phoneme, current_start, current_end = phoneme, start, end
+
+    merged_data.append((current_phoneme, current_start, current_end))
+    return merged_data
+
 
 ##############
 # This code was found and adapted from here:
@@ -94,7 +116,7 @@ for word in split_ids_w_time:
     for _time, _ix in word:
         phonemes_w_time_and_sep.append((_time, processor.decode(_ix)))   
 
-phonemes_w_time_and_sep = phonemes_w_time_and_sep[1:]
+# phonemes_w_time_and_sep = phonemes_w_time_and_sep[1:]
 for t, p in phonemes_w_time_and_sep:
     print(t, p)
 
@@ -107,35 +129,14 @@ for ix, (t, p) in enumerate(phonemes_w_time_and_sep):
         non_empty_phonemes_w_begin_and_end.append((p, t, t+0.02))
     else:
         non_empty_phonemes_w_begin_and_end.append((p, t, phonemes_w_time_and_sep[ix+1][0]))
-    
 
-for p, beg, end in non_empty_phonemes_w_begin_and_end:
+ 
+non_empty_phonemes_w_begin_and_end_deduplicated = merge_consecutive_phonemes(non_empty_phonemes_w_begin_and_end)
+
+
+print("List of phonemes with start and end times:")
+for p, beg, end in non_empty_phonemes_w_begin_and_end_deduplicated:
     print(f"{p} {beg} {end}")
-    
-    
-num_word_delimiters = sum([token_id == processor.tokenizer.word_delimiter_token_id for token_id in predicted_ids])
-print("Number of word delimiters: ", num_word_delimiters)
-split_phonemes_w_time = [[(_time, processor.decode(_ix))  for _time, _ix in word] for word in split_ids_w_time]
 
-# assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
-
-empty_string_token_id = 16
-word_start_times = []
-word_end_times = []
-for cur_ids_w_time, cur_word in zip(split_ids_w_time, phonemes):
-    # _times = [cur_ids_w_time[0]]
-    print(cur_word)
-    print(cur_ids_w_time)
-    print("".join([processor.decode(cur[-1]) for cur in cur_ids_w_time]))
-    print("")
-    _times = [_time for _time, _id in cur_ids_w_time if _id != empty_string_token_id]
-    word_start_times.append(min(_times))
-    word_end_times.append(max(_times))
+print("non_empty_phonemes_w_begin_and_end_deduplicated: ", non_empty_phonemes_w_begin_and_end_deduplicated)
     
-
-for phoneme, start, end in zip(phonemes, word_start_times, word_end_times):
-    print(f"{phoneme} {start} {end}")
-    
-    
-    
-## Plot figure
