@@ -1,139 +1,141 @@
 # Phoneme Recognition and Speech Timestamping Project
 
-Problem: Given an audio recording and its transcription, determine the beginning and end timestamps of each expected phoneme as heard in the recording.
+**Problem**: Given an audio recording and its transcription, determine the beginning and end timestamps of each expected phoneme as heard in the recording.
 
 ## Results
-Below is a table showing all the phonemes from the transcription, as converted using the CMU dictionary. Each phoneme is associated with:
-- the phoneme predicted by the model
-- the type of matching between the transcribed phoneme and the predicted one (correct, substitution, deletion, or addition)
-- the begining and end of the timestamp for this phoneme
+The table below represents phonemes from the transcription, converted using the CMU dictionary. For each phoneme, the table displays:
+- CMU dictionary-based transcribed phoneme
+- Model's predicted phoneme
+- Match type with the transcribed phoneme (correct, substitution, deletion, or addition)
+- Start and end timestamps
 
-Additionally here are a few additional metrics on how the predicted and transcribed phonemes match.
+**Performance Metrics**:
+- Correct: 82.6%
+- Substitution: 9.7%
+- Insertion: 0.0%
+- Deletion: 7.7%
 
-Percent correct: 82.6%
-Percent substitution: 9.7%
-Percent insertion: 0.0%
-Percent deletion: 7.7%
 
+| Transcribed Phoneme   | Predicted Phoneme   | Result       | Begin Time   | End Time   |
+|:----------------------|:--------------------|:-------------|:-------------|:-----------|
+| B                     | B                   | correct      | 0.6          | 0.641      |
+| AH                    | AH                  | correct      | 0.641        | 0.681      |
+| T                     | T                   | correct      | 0.681        | 0.781      |
+| AE                    | AE                  | correct      | 0.781        | 0.841      |
+| F                     | F                   | correct      | 0.841        | 0.861      |
+| T                     | T                   | correct      | 0.901        | 0.941      |
+| ER                    | ER                  | correct      | 0.941        | 1.001      |
+| AO                    | AA                  | substitution | 1.221        | 1.281      |
+| L                     | L                   | correct      | 1.281        | 1.361      |
+| DH                    | DH                  | correct      | 1.361        | 1.461      |
+| AE                    | AE                  | correct      | 1.461        | 1.521      |
+| T                     |                     | deletion     | -            | -          |
+| K                     | K                   | correct      | 1.581        | 1.661      |
+| AH                    | AH                  | correct      | 1.661        | 1.701      |
+| M                     | M                   | correct      | 1.701        | 1.821      |
+| OW                    | OW                  | correct      | 1.821        | 1.922      |
+| SH                    | SH                  | correct      | 1.922        | 2.042      |
+| AH                    | IH                  | substitution | 2.042        | 2.082      |
+| N                     | N                   | correct      | 2.082        | 2.882      |
+| W                     | W                   | correct      | 2.882        | 2.982      |
+| AA                    | AH                  | substitution | 2.982        | 3.042      |
+| Z                     | Z                   | correct      | 3.042        | 3.102      |
+| IH                    | IH                  | correct      | 3.102        | 3.143      |
+| T                     | T                   | correct      | 3.143        | 3.283      |
+| AO                    | AA                  | substitution | 3.283        | 3.323      |
+| L                     | L                   | correct      | 3.323        | 3.363      |
+| W                     | W                   | correct      | 3.403        | 3.503      |
+| ER                    | ER                  | correct      | 3.503        | 3.603      |
+| TH                    | TH                  | correct      | 3.603        | 3.703      |
+| W                     | W                   | correct      | 3.703        | 3.863      |
+| AY                    | AY                  | correct      | 3.863        | 3.963      |
+| L                     | L                   | correct      | 3.963        | 5.564      |
+| AE                    | AE                  | correct      | 5.564        | 5.645      |
+| B                     | B                   | correct      | 5.705        | 5.725      |
+| S                     | S                   | correct      | 5.785        | 5.885      |
+| AH                    | AH                  | correct      | 5.885        | 5.965      |
+| L                     | L                   | correct      | 5.965        | 6.065      |
+| UW                    | UW                  | correct      | 6.065        | 6.125      |
+| T                     |                     | deletion     | -            | -          |
+| L                     | L                   | correct      | 6.205        | 6.265      |
+| IY                    | IY                  | correct      | 6.265        | 6.365      |
+| Y                     | Y                   | correct      | 6.365        | 6.485      |
+| EH                    | EH                  | correct      | 6.485        | 6.665      |
+| S                     | S                   | correct      | 6.665        | 7.486      |
+| DH                    | DH                  | correct      | 7.486        | 7.546      |
+| AH                    | IH                  | substitution | 7.546        | 7.646      |
+| S                     | S                   | correct      | 7.646        | 7.786      |
+| EH                    | EH                  | correct      | 7.786        | 7.826      |
+| T                     |                     | deletion     | -            | -          |
+| D                     | D                   | correct      | 7.886        | 7.946      |
+| IH                    | IH                  | correct      | 7.946        | 8.026      |
+| Z                     | Z                   | correct      | 8.026        | 8.207      |
+| AY                    | AY                  | correct      | 8.207        | 8.327      |
+| N                     | N                   | correct      | 8.327        | 8.407      |
+| W                     | W                   | correct      | 8.487        | 8.547      |
+| AA                    | AH                  | substitution | 8.547        | 8.587      |
+| Z                     | Z                   | correct      | 8.587        | 8.647      |
+| B                     | B                   | correct      | 8.727        | 8.747      |
+| R                     | R                   | correct      | 8.807        | 8.907      |
+| EH                    | EH                  | correct      | 8.907        | 8.987      |
+| TH                    | TH                  | correct      | 8.987        | 9.027      |
+| T                     | T                   | correct      | 9.067        | 9.167      |
+| EY                    | EY                  | correct      | 9.167        | 9.207      |
+| K                     | K                   | correct      | 9.267        | 9.367      |
+| IH                    | IH                  | correct      | 9.367        | 9.408      |
+| NG                    | NG                  | correct      | 9.408        | 9.508      |
+| DH                    | DH                  | correct      | 9.788        | 9.848      |
+| AH                    | IY                  | substitution | 9.848        | 9.908      |
+| AE                    | AE                  | correct      | 10.008       | 10.068     |
+| K                     |                     | deletion     | -            | -          |
+| T                     | T                   | correct      | 10.148       | 10.228     |
+| ER                    | ER                  | correct      | 10.228       | 10.328     |
+| Z                     | Z                   | correct      | 10.328       | 10.368     |
+| W                     | W                   | correct      | 10.428       | 10.568     |
+| ER                    | ER                  | correct      | 10.568       | 10.689     |
+| IH                    | IH                  | correct      | 10.829       | 10.869     |
+| N                     | N                   | correct      | 10.869       | 10.909     |
+| K                     | K                   | correct      | 10.949       | 10.989     |
+| R                     | R                   | correct      | 11.069       | 11.169     |
+| EH                    | EH                  | correct      | 11.169       | 11.229     |
+| D                     | T                   | substitution | 11.229       | 11.269     |
+| AH                    | AH                  | correct      | 11.269       | 11.309     |
+| B                     | B                   | correct      | 11.349       | 11.409     |
+| AH                    |                     | deletion     | -            | -          |
+| L                     | L                   | correct      | 11.449       | 11.569     |
+| AH                    | AE                  | substitution | 12.13        | 12.19      |
+| N                     | N                   | correct      | 12.19        | 12.25      |
+| D                     |                     | deletion     | -            | -          |
+| DH                    | DH                  | correct      | 12.25        | 12.29      |
+| AH                    | AH                  | correct      | 12.29        | 12.39      |
+| S                     | S                   | correct      | 12.39        | 12.55      |
+| AO                    | OW                  | substitution | 12.55        | 12.67      |
+| NG                    | NG                  | correct      | 12.67        | 12.71      |
+| Z                     | Z                   | correct      | 12.77        | 12.79      |
+| W                     | W                   | correct      | 12.83        | 12.91      |
+| ER                    | ER                  | correct      | 12.91        | 12.99      |
+| M                     | M                   | correct      | 12.99        | 13.11      |
+| EH                    | EH                  | correct      | 13.11        | 13.171     |
+| M                     | M                   | correct      | 13.171       | 13.291     |
+| ER                    |                     | deletion     | -            | -          |
+| AH                    | AH                  | correct      | 13.291       | 13.311     |
+| B                     | B                   | correct      | 13.371       | 13.411     |
+| AH                    |                     | deletion     | -            | -          |
+| L                     | L                   | correct      | 13.451       | 13.831     |
 
-| Transcribed Phoneme   | Predicted Phoneme   | Result       | Begin Time         | End Time           |
-|:----------------------|:--------------------|:-------------|:-------------------|:-------------------|
-| B                     | B                   | correct      | 0.6004788961038962 | 0.6405108225108226 |
-| AH                    | AH                  | correct      | 0.6405108225108226 | 0.680542748917749  |
-| T                     | T                   | correct      | 0.680542748917749  | 0.780622564935065  |
-| AE                    | AE                  | correct      | 0.780622564935065  | 0.8406704545454546 |
-| F                     | F                   | correct      | 0.8406704545454546 | 0.8606864177489177 |
-| T                     | T                   | correct      | 0.9007183441558441 | 0.9407502705627706 |
-| ER                    | ER                  | correct      | 0.9407502705627706 | 1.0007981601731601 |
-| AO                    | AA                  | substitution | 1.2209737554112554 | 1.2810216450216452 |
-| L                     | L                   | correct      | 1.2810216450216452 | 1.361085497835498  |
-| DH                    | DH                  | correct      | 1.361085497835498  | 1.461165313852814  |
-| AE                    | AE                  | correct      | 1.461165313852814  | 1.5212132034632035 |
-| T                     |                     | deletion     | -                  | -                  |
-| K                     | K                   | correct      | 1.581261093073593  | 1.6613249458874462 |
-| AH                    | AH                  | correct      | 1.6613249458874462 | 1.7013568722943724 |
-| M                     | M                   | correct      | 1.7013568722943724 | 1.821452651515152  |
-| OW                    | OW                  | correct      | 1.821452651515152  | 1.9215324675324676 |
-| SH                    | SH                  | correct      | 1.9215324675324676 | 2.041628246753247  |
-| AH                    | IH                  | substitution | 2.041628246753247  | 2.081660173160173  |
-| N                     | N                   | correct      | 2.081660173160173  | 2.882298701298702  |
-| W                     | W                   | correct      | 2.882298701298702  | 2.9823785173160173 |
-| AA                    | AH                  | substitution | 2.9823785173160173 | 3.042426406926407  |
-| Z                     | Z                   | correct      | 3.042426406926407  | 3.102474296536797  |
-| IH                    | IH                  | correct      | 3.102474296536797  | 3.142506222943723  |
-| T                     | T                   | correct      | 3.142506222943723  | 3.2826179653679652 |
-| AO                    | AA                  | substitution | 3.2826179653679652 | 3.3226498917748923 |
-| L                     | L                   | correct      | 3.3226498917748923 | 3.3626818181818185 |
-| W                     | W                   | correct      | 3.4027137445887448 | 3.502793560606061  |
-| ER                    | ER                  | correct      | 3.502793560606061  | 3.6028733766233763 |
-| TH                    | TH                  | correct      | 3.6028733766233763 | 3.7029531926406927 |
-| W                     | W                   | correct      | 3.7029531926406927 | 3.863080898268399  |
-| AY                    | AY                  | correct      | 3.863080898268399  | 3.9631607142857144 |
-| L                     | L                   | correct      | 3.9631607142857144 | 5.564437770562771  |
-| AE                    | AE                  | correct      | 5.564437770562771  | 5.644501623376623  |
-| B                     | B                   | correct      | 5.704549512987013  | 5.7245654761904765 |
-| S                     | S                   | correct      | 5.784613365800866  | 5.884693181818182  |
-| AH                    | AH                  | correct      | 5.884693181818182  | 5.964757034632035  |
-| L                     | L                   | correct      | 5.964757034632035  | 6.0648368506493515 |
-| UW                    | UW                  | correct      | 6.0648368506493515 | 6.12488474025974   |
-| T                     |                     | deletion     | -                  | -                  |
-| L                     | L                   | correct      | 6.204948593073594  | 6.264996482683983  |
-| IY                    | IY                  | correct      | 6.264996482683983  | 6.365076298701299  |
-| Y                     | Y                   | correct      | 6.365076298701299  | 6.485172077922078  |
-| EH                    | EH                  | correct      | 6.485172077922078  | 6.665315746753247  |
-| S                     | S                   | correct      | 6.665315746753247  | 7.485970238095238  |
-| DH                    | DH                  | correct      | 7.485970238095238  | 7.546018127705628  |
-| AH                    | IH                  | substitution | 7.546018127705628  | 7.6460979437229435 |
-| S                     | S                   | correct      | 7.6460979437229435 | 7.786209686147187  |
-| EH                    | EH                  | correct      | 7.786209686147187  | 7.826241612554113  |
-| T                     |                     | deletion     | -                  | -                  |
-| D                     | D                   | correct      | 7.886289502164503  | 7.946337391774892  |
-| IH                    | IH                  | correct      | 7.946337391774892  | 8.026401244588746  |
-| Z                     | Z                   | correct      | 8.026401244588746  | 8.206544913419913  |
-| AY                    | AY                  | correct      | 8.206544913419913  | 8.326640692640693  |
-| N                     | N                   | correct      | 8.326640692640693  | 8.406704545454547  |
-| W                     | W                   | correct      | 8.4867683982684    | 8.546816287878787  |
-| AA                    | AH                  | substitution | 8.546816287878787  | 8.586848214285714  |
-| Z                     | Z                   | correct      | 8.586848214285714  | 8.646896103896104  |
-| B                     | B                   | correct      | 8.726959956709957  | 8.746975919913421  |
-| R                     | R                   | correct      | 8.807023809523809  | 8.907103625541126  |
-| EH                    | EH                  | correct      | 8.907103625541126  | 8.987167478354978  |
-| TH                    | TH                  | correct      | 8.987167478354978  | 9.027199404761905  |
-| T                     | T                   | correct      | 9.06723133116883   | 9.167311147186147  |
-| EY                    | EY                  | correct      | 9.167311147186147  | 9.207343073593075  |
-| K                     | K                   | correct      | 9.267390963203464  | 9.36747077922078   |
-| IH                    | IH                  | correct      | 9.36747077922078   | 9.407502705627707  |
-| NG                    | NG                  | correct      | 9.407502705627707  | 9.507582521645022  |
-| DH                    | DH                  | correct      | 9.787806006493506  | 9.847853896103897  |
-| AH                    | IY                  | substitution | 9.847853896103897  | 9.907901785714287  |
-| AE                    | AE                  | correct      | 10.007981601731602 | 10.068029491341992 |
-| K                     |                     | deletion     | -                  | -                  |
-| T                     | T                   | correct      | 10.148093344155845 | 10.228157196969697 |
-| ER                    | ER                  | correct      | 10.228157196969697 | 10.328237012987014 |
-| Z                     | Z                   | correct      | 10.328237012987014 | 10.368268939393941 |
-| W                     | W                   | correct      | 10.428316829004329 | 10.568428571428571 |
-| ER                    | ER                  | correct      | 10.568428571428571 | 10.68852435064935  |
-| IH                    | IH                  | correct      | 10.828636093073593 | 10.86866801948052  |
-| N                     | N                   | correct      | 10.86866801948052  | 10.908699945887447 |
-| K                     | K                   | correct      | 10.948731872294372 | 10.9887637987013   |
-| R                     | R                   | correct      | 11.068827651515152 | 11.168907467532469 |
-| EH                    | EH                  | correct      | 11.168907467532469 | 11.228955357142858 |
-| D                     | T                   | substitution | 11.228955357142858 | 11.268987283549784 |
-| AH                    | AH                  | correct      | 11.268987283549784 | 11.30901920995671  |
-| B                     | B                   | correct      | 11.349051136363638 | 11.409099025974026 |
-| AH                    |                     | deletion     | -                  | -                  |
-| L                     | L                   | correct      | 11.449130952380953 | 11.569226731601733 |
-| AH                    | AE                  | substitution | 12.129673701298703 | 12.189721590909091 |
-| N                     | N                   | correct      | 12.189721590909091 | 12.24976948051948  |
-| D                     |                     | deletion     | -                  | -                  |
-| DH                    | DH                  | correct      | 12.24976948051948  | 12.289801406926408 |
-| AH                    | AH                  | correct      | 12.289801406926408 | 12.389881222943725 |
-| S                     | S                   | correct      | 12.389881222943725 | 12.55000892857143  |
-| AO                    | OW                  | substitution | 12.55000892857143  | 12.670104707792209 |
-| NG                    | NG                  | correct      | 12.670104707792209 | 12.710136634199134 |
-| Z                     | Z                   | correct      | 12.770184523809524 | 12.790200487012987 |
-| W                     | W                   | correct      | 12.830232413419914 | 12.910296266233766 |
-| ER                    | ER                  | correct      | 12.910296266233766 | 12.99036011904762  |
-| M                     | M                   | correct      | 12.99036011904762  | 13.1104558982684   |
-| EH                    | EH                  | correct      | 13.1104558982684   | 13.170503787878788 |
-| M                     | M                   | correct      | 13.170503787878788 | 13.29059956709957  |
-| ER                    |                     | deletion     | -                  | -                  |
-| AH                    | AH                  | correct      | 13.29059956709957  | 13.31061553030303  |
-| B                     | B                   | correct      | 13.370663419913422 | 13.410695346320347 |
-| AH                    |                     | deletion     | -                  | -                  |
-| L                     | L                   | correct      | 13.450727272727274 | 13.831030573593074 |
+#### Evaluation of Results
+The model's performance is commendable, achieving 82.6% accuracy. While some phoneme substitutions are understandable due to phonetic similarities, they highlight potential areas for refinement. A comprehensive evaluation would provide a clearer picture.
 
-## Approach description
-To solve this problem, I used a pre-trained Wav2Vec2 with CTC model to predict phonemes. The default vocabulary used the IPA phoneme notation, I used a mapping table to map them back to the phonemes used in the CMU classification.
+It's worth noting that certain phonemes, notably the initial `N`, have an extended duration of approximately 800 ms. This anomaly could be attributed to the model's infrequent predictions of the "word delimiter token." Further model fine-tuning might address this.
 
-Since the model splits the audio into pieces of about 20ms this is the maximum resolution that I can get to predict the timestamps. I used the timestamps of each phoneme, as well as those of each empty string tokens ('') and word separators to determine the end timestamp of each phoneme.
+## Methodology
+I employed the pre-trained Wav2Vec2 with CTC model to predict phonemes. By default, this model utilizes the IPA phoneme notation. To align it with our needs, I used a mapping table to convert them to the CMU classification.
 
-In addition to this, I used the CMU dictionary to extract phonemes from the provided transcription.
+Considering the model's segmentation of audio into ~20ms units, this granularity dictated our timestamp resolution. I utilized the timestamps of each phoneme, empty string tokens (''), and word separators to determine the precise ending timestamp for each phoneme.
 
-Lastly, I implemented a Levenshtein distance-measuring algorithm to match the transcribed phonemes to the predicted ones. This finally results in the table above.
+Further, the CMU dictionary served as a valuable resource for extracting phonemes from the provided transcription. To ensure an accurate correlation between transcribed and predicted phonemes, I integrated a Levenshtein distance algorithm. This algorithm helps find the best match between transcription and prediciton, and it lead to the aforementioned results table.
 
-Note: while this code works on the audio recordings that I have tested, it is possible that the code breaks on some other recordings. The reason is that the phoneme vocabulary used by the underlying model is different than that I found online. Therefore, it is possible that the IPA -> CMU phoneme translation break. This can be resolved by adding an entry in the dictionary, mapping the IPA phoneme that yields an IndexError to the dictionary in `scripts/globals.py`
-
+**Note**: The code functions well with most tested audio recordings. However, potential discrepancies might arise due to variations in phoneme vocabulary between different sources. In cases where the IPA -> CMU phoneme mapping is absent, you can remedy this by updating the dictionary in `scripts/globals.py`. Phonemes such as `ʧ` or `ʤ` are currently absent.
 
 ## Installation
 ### Prerequisites
@@ -204,15 +206,10 @@ Before running the installation steps, ensure that you have Python 3.x installed
    python scripts/convert_mp3_to_wav.py
    ```
 
-2. **Phoneme Recognition**:
+2. **Phoneme Recognition with Timestamps**:
 
    ```bash
-   python scripts/phoneme_regognition.py
+   python scripts/automatic_phoneme_timestamp_extraction.py
    ```
 
-3. **Word Extraction with Timestamps**:
-
-   ```bash
-   python scripts/speech_recognition_with_timestamps.py
-   ```
 
