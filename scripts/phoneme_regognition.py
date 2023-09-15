@@ -32,7 +32,7 @@ def get_resampled_audio(audio_filepath):
 # Add the path to espeak library to the environment variables
 os.environ['PHONEMIZER_ESPEAK_LIBRARY'] = "/opt/homebrew/Cellar/espeak/1.48.04_1/lib/libespeak.dylib"
 
-model_name = "facebook/wav2vec2-xlsr-53-espeak-cv-ft"
+model_name = "vitouphy/wav2vec2-xls-r-300m-timit-phoneme"
 
 # load model and processor
 processor = Wav2Vec2Processor.from_pretrained(model_name)
@@ -84,6 +84,8 @@ split_ids_w_time = [list(group) for k, group
                     in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
                     if not k]
 
+num_word_delimiters = sum([token_id == processor.tokenizer.word_delimiter_token_id for token_id in predicted_ids])
+print("Number of word delimiters: ", num_word_delimiters)
 split_phonemes_w_time = [[(_time, processor.decode(_ix))  for _time, _ix in word] for word in split_ids_w_time]
 
 # assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
