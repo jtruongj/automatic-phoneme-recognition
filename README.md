@@ -1,12 +1,20 @@
 # Phoneme Recognition and Speech Timestamping Project
 
-This project provides tools for phoneme recognition, word extraction with timestamps, and MP3 to WAV file conversion. It uses deep learning models and tools to achieve this.
+Problem: Given an audio recording and its transcription, determine the beginning and end timestamps of each expected phoneme as heard in the recording.
 
 ## Results
 Below is a table showing all the phonemes from the transcription, as converted using the CMU dictionary. Each phoneme is associated with:
 - the phoneme predicted by the model
 - the type of matching between the transcribed phoneme and the predicted one (correct, substitution, deletion, or addition)
 - the begining and end of the timestamp for this phoneme
+
+Additionally here are a few additional metrics on how the predicted and transcribed phonemes match.
+
+Percent correct: 82.6%
+Percent substitution: 9.7%
+Percent insertion: 0.0%
+Percent deletion: 7.7%
+
 
 | Transcribed Phoneme   | Predicted Phoneme   | Result       | Begin Time         | End Time           |
 |:----------------------|:--------------------|:-------------|:-------------------|:-------------------|
@@ -115,8 +123,19 @@ Below is a table showing all the phonemes from the transcription, as converted u
 | AH                    |                     | deletion     | -                  | -                  |
 | L                     | L                   | correct      | 13.450727272727274 | 13.831030573593074 |
 
-## Installation
+## Approach description
+To solve this problem, I used a pre-trained Wav2Vec2 with CTC model to predict phonemes. The default vocabulary used the IPA phoneme notation, I used a mapping table to map them back to the phonemes used in the CMU classification.
 
+Since the model splits the audio into pieces of about 20ms this is the maximum resolution that I can get to predict the timestamps. I used the timestamps of each phoneme, as well as those of each empty string tokens ('') and word separators to determine the end timestamp of each phoneme.
+
+In addition to this, I used the CMU dictionary to extract phonemes from the provided transcription.
+
+Lastly, I implemented a Levenshtein distance-measuring algorithm to match the transcribed phonemes to the predicted ones. This finally results in the table above.
+
+Note: while this code works on the audio recordings that I have tested, it is possible that the code breaks on some other recordings. The reason is that the phoneme vocabulary used by the underlying model is different than that I found online. Therefore, it is possible that the IPA -> CMU phoneme translation break. This can be resolved by adding an entry in the dictionary, mapping the IPA phoneme that yields an IndexError to the dictionary in `scripts/globals.py`
+
+
+## Installation
 ### Prerequisites
 
 Before running the installation steps, ensure that you have Python 3.x installed on your machine.
