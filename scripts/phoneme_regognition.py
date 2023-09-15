@@ -82,19 +82,53 @@ ids_w_time = [i for i in ids_w_time if i[1] != processor.tokenizer.pad_token_id]
 # now split the ids into groups of ids where each group represents a word
 split_ids_w_time = [list(group) for k, group
                     in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
-                    if not k]
+                    ]
+print("split_ids_w_time: ", split_ids_w_time)
+phonemes_w_time_and_sep = []
+for word in split_ids_w_time:
+    _time, _ix = word[0]
+    if _ix == 0:
+        phonemes_w_time_and_sep.append((_time, "SEP"))  
+        continue 
+        
+    for _time, _ix in word:
+        phonemes_w_time_and_sep.append((_time, processor.decode(_ix)))   
 
+phonemes_w_time_and_sep = phonemes_w_time_and_sep[1:]
+for t, p in phonemes_w_time_and_sep:
+    print(t, p)
+
+non_empty_phonemes_w_begin_and_end = []
+for ix, (t, p) in enumerate(phonemes_w_time_and_sep):
+    if p == "" or p == "SEP":
+        continue
+    
+    if ix == len(phonemes_w_time_and_sep) -1:
+        non_empty_phonemes_w_begin_and_end.append((p, t, t+0.02))
+    else:
+        non_empty_phonemes_w_begin_and_end.append((p, t, phonemes_w_time_and_sep[ix+1][0]))
+    
+
+for p, beg, end in non_empty_phonemes_w_begin_and_end:
+    print(f"{p} {beg} {end}")
+    
+    
 num_word_delimiters = sum([token_id == processor.tokenizer.word_delimiter_token_id for token_id in predicted_ids])
 print("Number of word delimiters: ", num_word_delimiters)
 split_phonemes_w_time = [[(_time, processor.decode(_ix))  for _time, _ix in word] for word in split_ids_w_time]
 
 # assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
 
+empty_string_token_id = 16
 word_start_times = []
 word_end_times = []
-for cur_ids_w_time, cur_word in zip(split_ids_w_time[0], phonemes):
-    _times = [cur_ids_w_time[0]]
-    # _times = [_time for _time, _id in cur_ids_w_time]
+for cur_ids_w_time, cur_word in zip(split_ids_w_time, phonemes):
+    # _times = [cur_ids_w_time[0]]
+    print(cur_word)
+    print(cur_ids_w_time)
+    print("".join([processor.decode(cur[-1]) for cur in cur_ids_w_time]))
+    print("")
+    _times = [_time for _time, _id in cur_ids_w_time if _id != empty_string_token_id]
     word_start_times.append(min(_times))
     word_end_times.append(max(_times))
     
