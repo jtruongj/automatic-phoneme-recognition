@@ -32,9 +32,11 @@ def get_resampled_audio(audio_filepath):
 # Add the path to espeak library to the environment variables
 os.environ['PHONEMIZER_ESPEAK_LIBRARY'] = "/opt/homebrew/Cellar/espeak/1.48.04_1/lib/libespeak.dylib"
 
+model_name = "facebook/wav2vec2-xlsr-53-espeak-cv-ft"
+
 # load model and processor
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-xlsr-53-espeak-cv-ft")
-model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-xlsr-53-espeak-cv-ft")
+processor = Wav2Vec2Processor.from_pretrained(model_name)
+model = Wav2Vec2ForCTC.from_pretrained(model_name)
 
 print(model)
 
