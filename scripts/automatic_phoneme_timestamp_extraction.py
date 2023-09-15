@@ -99,43 +99,47 @@ def get_predicted_phoneme_ids(audio_filepath: str, processor, model):
 
 
 def get_predicted_phonemes_and_timestamps(predicted_ids: List[int], duration_sec: float, processor):
+    # Convert the tensor of predicted IDs to a list.
+    predicted_ids_list = predicted_ids[0].tolist()
 
-    # Code to extract phonemes and timestamps together.
-    predicted_ids = predicted_ids[0].tolist()
+    # Calculate the timestamp for each predicted ID based on its position in the sequence.
+    timestamped_ids = [(i / len(predicted_ids_list) * duration_sec, _id) for i, _id in enumerate(predicted_ids_list)]
 
-    ids_w_time = [(i / len(predicted_ids) * duration_sec, _id) for i, _id in enumerate(predicted_ids)]
-    # remove entries which are just "padding" (i.e. no characers are recognized)
-    ids_w_time = [i for i in ids_w_time if i[1] != processor.tokenizer.pad_token_id]
-    # now split the ids into groups of ids where each group represents a word
-    split_ids_w_time = [
-        list(group) for k, group in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
+    # Filter out padding tokens, which don't represent recognized characters.
+    non_padded_timestamped_ids = [item for item in timestamped_ids if item[1] != processor.tokenizer.pad_token_id]
+
+    # Group IDs by word. The word delimiter is used to split the sequence into words.
+    word_groups = [
+        list(group) for k, group in groupby(non_padded_timestamped_ids,
+                                            lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
     ]
 
-    # get start time of all phonemes, including the separator phoneme SEP
-    phonemes_w_time_and_sep = []
-    for word in split_ids_w_time:
-        _time, _ix = word[0]
-        if _ix == 0:
-            phonemes_w_time_and_sep.append((_time, "SEP"))
+    # Convert the predicted IDs to phonemes and extract their timestamps.
+    timestamped_phonemes = []
+    for word in word_groups:
+        start_time, token_id = word[0]
+        if token_id == 0:
+            timestamped_phonemes.append((start_time, "SEP"))
             continue
 
-        for _time, _ix in word:
-            phonemes_w_time_and_sep.append((_time, processor.decode(_ix)))
+        for start_time, token_id in word:
+            timestamped_phonemes.append((start_time, processor.decode(token_id)))
 
-    # Add end timestamps to phonemes
-    non_empty_phonemes_w_begin_and_end = []
-    for ix, (t, p) in enumerate(phonemes_w_time_and_sep):
-        if p == "" or p == "SEP":
+    # Calculate end timestamps for each phoneme.
+    phonemes_with_start_and_end_times = []
+    for ix, (start_time, phoneme) in enumerate(timestamped_phonemes):
+        if phoneme == "" or phoneme == "SEP":
             continue
 
-        if ix == len(phonemes_w_time_and_sep) - 1:
-            non_empty_phonemes_w_begin_and_end.append((p, t, t + 0.02))
+        if ix == len(timestamped_phonemes) - 1:
+            phonemes_with_start_and_end_times.append((phoneme, start_time, start_time + 0.02))
         else:
-            non_empty_phonemes_w_begin_and_end.append((p, t, phonemes_w_time_and_sep[ix + 1][0]))
+            phonemes_with_start_and_end_times.append((phoneme, start_time, timestamped_phonemes[ix + 1][0]))
 
-    # Merge identical consecutive phonemes
-    phonemes_from_audio = merge_consecutive_phonemes(non_empty_phonemes_w_begin_and_end)
-    return phonemes_from_audio
+    # Merge consecutive phonemes that are identical.
+    merged_phonemes = merge_consecutive_phonemes(phonemes_with_start_and_end_times)
+
+    return merged_phonemes
 
 
 if __name__ == '__main__':
