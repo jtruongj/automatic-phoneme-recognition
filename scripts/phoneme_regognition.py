@@ -45,7 +45,7 @@ print(model)
 # input_values = processor(ds[0]["audio"]["array"], return_tensors="pt").input_values
 # sample_rate = ds[0]["audio"]["sampling_rate"]
 
-audio_filepath = './data/assessment_9.wav'
+audio_filepath = os.path.join(os.path.dirname(__file__), '../data/assessment_9.wav')
 text = "But after all that commotion, was it all worthwhile? Absolutely yes! The set design was breathtaking, the actors were incredible, and the songs were memorable."
 
 # Convert to numpy for feeding into processor
@@ -79,8 +79,10 @@ ids_w_time = [(i / len(predicted_ids) * duration_sec, _id) for i, _id in enumera
 ids_w_time = [i for i in ids_w_time if i[1] != processor.tokenizer.pad_token_id]
 # now split the ids into groups of ids where each group represents a word
 split_ids_w_time = [list(group) for k, group
-                    in groupby(ids_w_time, lambda x: x[1] == 0)
+                    in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
                     if not k]
+
+split_phonemes_w_time = [[(_time, processor.decode(_ix))  for _time, _ix in word] for word in split_ids_w_time]
 
 # assert len(split_ids_w_time[0]) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
 
