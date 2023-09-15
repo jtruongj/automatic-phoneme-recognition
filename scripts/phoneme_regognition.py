@@ -8,6 +8,21 @@ from transformers import pipeline
 
 import os
 
+def get_resampled_audio(audio_filepath):
+    # Resample function using torchaudio
+    def resample(waveform, sample_rate, target_sample_rate=16000):
+        """Resample the WAV audio to the target sample rate."""
+        if sample_rate == target_sample_rate:
+            return waveform
+
+        resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=target_sample_rate)
+        return resampler(waveform)
+
+    # Read and resample
+    waveform, current_sample_rate = torchaudio.load(audio_filepath)
+    resampled_waveform = resample(waveform, current_sample_rate)
+    return resampled_waveform
+
 ##############
 # This code was found and adapted from here:
 # https://huggingface.co/facebook/wav2vec2-lv-60-espeak-cv-ft
@@ -30,24 +45,11 @@ print(model)
 # input_values = processor(ds[0]["audio"]["array"], return_tensors="pt").input_values
 # sample_rate = ds[0]["audio"]["sampling_rate"]
 
-audio_filepath = '../data/assessment_9.wav'
+audio_filepath = './data/assessment_9.wav'
 text = "But after all that commotion, was it all worthwhile? Absolutely yes! The set design was breathtaking, the actors were incredible, and the songs were memorable."
 
-# Resample function using torchaudio
-def resample(waveform, sample_rate, target_sample_rate=16000):
-    """Resample the WAV audio to the target sample rate."""
-    if sample_rate == target_sample_rate:
-        return waveform
-
-    resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=target_sample_rate)
-    return resampler(waveform)
-
-# Read and resample
-waveform, current_sample_rate = torchaudio.load(audio_filepath)
-resampled_waveform = resample(waveform, current_sample_rate)
-
 # Convert to numpy for feeding into processor
-speech = resampled_waveform.squeeze().numpy()
+speech = get_resampled_audio(audio_filepath).numpy()[0]
 sample_rate = processor.feature_extractor.sampling_rate
 input_values = processor(speech, sampling_rate=sample_rate, return_tensors="pt").input_values
 
@@ -85,7 +87,8 @@ split_ids_w_time = [list(group) for k, group
 word_start_times = []
 word_end_times = []
 for cur_ids_w_time, cur_word in zip(split_ids_w_time[0], phonemes):
-    _times = [_time for _time, _id in cur_ids_w_time]
+    _times = [cur_ids_w_time[0]]
+    # _times = [_time for _time, _id in cur_ids_w_time]
     word_start_times.append(min(_times))
     word_end_times.append(max(_times))
     
