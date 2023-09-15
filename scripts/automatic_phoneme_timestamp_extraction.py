@@ -1,6 +1,5 @@
 
 from typing import List, Tuple
-from distance import levenshtein
 
 import torchaudio
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
@@ -8,7 +7,6 @@ from datasets import load_dataset
 from itertools import groupby
 import torch
 
-from transformers import pipeline
 
 import os
 
