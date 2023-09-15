@@ -137,6 +137,7 @@ Further, the CMU dictionary served as a valuable resource for extracting phoneme
 
 **Note**: The code functions well with most tested audio recordings. However, potential discrepancies might arise due to variations in phoneme vocabulary between different sources. In cases where the IPA -> CMU phoneme mapping is absent, you can remedy this by updating the dictionary in `scripts/globals.py`. Phonemes such as `ʧ` or `ʤ` are currently absent.
 
+---
 ## Installation
 ### Prerequisites
 
