@@ -4,3 +4,5 @@
 # Hide my virtual environment
 env/*
 
+# Cache
+scripts/__pycache__/*

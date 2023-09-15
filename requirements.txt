@@ -6,3 +6,4 @@ phonemizer
 librosa
 soundfile
 pydub
+g2p_en
