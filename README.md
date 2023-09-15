@@ -6,7 +6,7 @@ This project provides tools for phoneme recognition, word extraction with timest
 - [x] Merge phoneme recognition with ASR with timestamps
 - [x] Run model on assigment recording
 - [x] Implement grapheme -> phoneme extraction
-- [ ] Match grapheme-extracted phonemes to pronounced phonemes
+- [x] Match grapheme-extracted phonemes to pronounced phonemes
 - [ ] Create visualizations
 - [ ] Clean up code base
 - [ ] Put together a document
