@@ -115,6 +115,7 @@ def print_table_in_markdown(levenshtein_matching, phonemes_from_audio_cmu, phone
 
     df = pd.DataFrame(data, columns=["Transcribed Phoneme", "Predicted Phoneme", "Result", "Begin Time", "End Time"])
 
+    df = df.round(3)
     # Replace NaN values with "-"
     df.fillna("-", inplace=True)
 
