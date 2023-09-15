@@ -62,6 +62,9 @@ split_ids_w_time = [list(group) for k, group
                     in groupby(ids_w_time, lambda x: x[1] == processor.tokenizer.word_delimiter_token_id)
                     if not k]
 
+split_phonemes_w_time = [[(_time, processor.decode(_ix))  for _time, _ix in word] for word in split_ids_w_time]
+
+
 assert len(split_ids_w_time) == len(words)  # make sure that there are the same number of id-groups as words. Otherwise something is wrong
 
 word_start_times = []
@@ -71,4 +74,3 @@ for cur_ids_w_time, cur_word in zip(split_ids_w_time, words):
     word_start_times.append(min(_times))
     word_end_times.append(max(_times))
     
-words, word_start_times, word_end_times
